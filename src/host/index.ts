@@ -7,7 +7,7 @@ import { ImageViewerEditorProvider } from "@host/provider";
 export function activate(context: vscode.ExtensionContext) {
   const provider = new ImageViewerEditorProvider(context);
 
-  const providerRegistration = vscode.window.registerCustomEditorProvider("1ureka.imageViewer", provider, {
+  const providerRegistration = vscode.window.registerCustomEditorProvider("1ureka.vscode.preview.image", provider, {
     webviewOptions: { retainContextWhenHidden: true },
     supportsMultipleEditorsPerDocument: false,
   });
