@@ -1,5 +1,5 @@
 import { build } from "esbuild";
-import { spawn } from "child_process";
+import { execSync, spawn } from "child_process";
 import fs from "fs-extra";
 import * as path from "path";
 
@@ -63,14 +63,25 @@ async function buildWebview() {
  * 執行 vsce 指令將擴充功能打包成 .vsix 檔案
  */
 async function packageExtension() {
+  console.log("Checking environment for vsce...");
+
+  // 檢查 vsce 是否已安裝在環境中
+  try {
+    execSync("vsce --version", { stdio: "ignore" });
+  } catch {
+    console.error("❌ Error: 'vsce' command not found.");
+    console.error("   Please install it globally using: npm install -g @vscode/vsce");
+    process.exit(1);
+  }
+
+  console.log("✓ Environment check passed (vsce found)");
   console.log();
 
   await new Promise<void>((resolve, reject) => {
-    const vsceProcess = spawn(
-      "npx",
-      ["vsce", "package", "--out", ".", "--allow-missing-repository", "--skip-license"],
-      { stdio: "inherit", shell: true },
-    );
+    const vsceProcess = spawn("vsce", ["package", "--out", ".", "--allow-missing-repository", "--skip-license"], {
+      stdio: "inherit",
+      shell: true,
+    });
 
     vsceProcess.on("close", (code) => {
       if (code === 0) resolve();
