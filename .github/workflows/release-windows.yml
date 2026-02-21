@@ -32,6 +32,9 @@ jobs:
         if: ${{ steps.npm_ci.outcome == 'failure' }}
         run: npm install
 
+      - name: Install vsce globally
+        run: npm install -g @vscode/vsce
+
       - name: Build and package extension
         run: npm run build
 
