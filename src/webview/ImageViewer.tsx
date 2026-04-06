@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, ButtonBase, Container, Divider, Popover, Skeleton, SxProps, Typography } from "@mui/material";
 import { TransformWrapper, TransformComponent, useControls } from "react-zoom-pan-pinch";
 
 import { centerTextSx, colorMix } from "@view/utils/style";
-import { resetTransformRef, handleResetTransform, handleEyeDropper, handleExportImage } from "@view/action";
+import { handleResetTransform, handleEyeDropper, handleExportImage, handleCopy } from "@view/action";
+import { resetTransformRef } from "@view/action";
 import { useDecodeImage } from "@view/hooks";
 import { contextMenuStore, dataStore } from "@view/store";
 
@@ -156,9 +157,27 @@ export const ContextMenu = () => {
     contextMenuStore.setState({ anchorPosition: null });
   };
 
-  const handlerWrapper = (handler: () => void) => {
+  const pending = useRef<(() => void) | null>(null);
+
+  const handlerWrapper = (handler: () => void, { waitForTransition = false } = {}) => {
     handleClose();
-    handler();
+    if (waitForTransition) {
+      pending.current = handler;
+    } else {
+      handler();
+    }
+  };
+
+  const handleTransitionEnd = () => {
+    if (open) {
+      pending.current = null;
+    } else {
+      pending.current?.();
+    }
+  };
+
+  const handleTransitionEnter = () => {
+    pending.current = null;
   };
 
   return (
@@ -167,7 +186,10 @@ export const ContextMenu = () => {
       onClose={handleClose}
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition!}
-      slotProps={{ paper: { elevation: 0, sx: actionDropdownMenuSx } }}
+      slotProps={{
+        paper: { elevation: 0, sx: actionDropdownMenuSx },
+        transition: { onExited: handleTransitionEnd, onEnter: handleTransitionEnter },
+      }}
     >
       <ActionDropdownButton
         actionIcon="codicon codicon-debug-restart"
@@ -180,12 +202,17 @@ export const ContextMenu = () => {
       <ActionDropdownButton
         actionIcon="codicon codicon-inspect"
         actionName="吸取顏色並複製"
-        onClick={() => handlerWrapper(handleEyeDropper)}
+        onClick={() => handlerWrapper(handleEyeDropper, { waitForTransition: true })}
       />
       <ActionDropdownButton
         actionIcon="codicon codicon-export"
         actionName="導出為..."
         onClick={() => handlerWrapper(handleExportImage)}
+      />
+      <ActionDropdownButton
+        actionIcon="codicon codicon-copy"
+        actionName="複製至剪貼簿"
+        onClick={() => handlerWrapper(handleCopy)}
       />
     </Popover>
   );
