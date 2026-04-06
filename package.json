@@ -1,10 +1,10 @@
 {
-  "name": "1ureka-vscode-preview",
+  "name": "vs-preview",
   "displayName": "1ureka 的 VS Code 預覽套件",
   "author": "1ureka",
   "publisher": "1ureka",
   "description": "取代 VS Code 內建的多媒體資源預覽，提供專業級的檢視體驗與便捷的操作工具。",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "categories": [
     "Other"
   ],

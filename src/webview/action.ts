@@ -15,6 +15,7 @@ const handleEyeDropper = async () => {
     const result = await eyeDropper.open();
     await invoke("image.copyColor", result.sRGBHex);
   } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") return;
     await invoke("show.error", "顏色選取失敗" + (error instanceof Error ? `: ${error.message}` : String(error)));
   }
 };
