@@ -41,7 +41,7 @@
 
 ### 安裝步驟
 
-1. 前往 [GitHub Releases](https://github.com/1ureka/1ureka.vscode.preview/releases) 下載最新的 `.vsix` 檔案
+1. 前往 [GitHub Releases](https://github.com/1ureka/vs-preview/releases) 下載最新的 `.vsix` 檔案
 
 2. 在 VS Code 中安裝擴展：
    - 開啟命令面板（`Ctrl+Shift+P`）
