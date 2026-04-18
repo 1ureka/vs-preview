@@ -2,6 +2,8 @@ import sharp from "sharp";
 import * as path from "path";
 import { typedKeys } from "@shared/utils/index";
 
+sharp.cache({ files: 0 });
+
 /**
  * 在當前執行環境中，取得 sharp 支援的圖片格式清單
  */
